@@ -1,5 +1,9 @@
 from tkinter import*
 
+import qrcode
+from PIL import Image, ImageTk
+from resizeimage import resizeimage
+
 
 class QRGenerator:
     def __init__(self, root):
@@ -82,8 +86,8 @@ class QRGenerator:
             'goudy old style', 20), bg='#09ad37', fg='white')
         qrCodeTitle.place(x=0, y=0, relwidth=1)
 
-        qrCodeLabel = Label(qrCodeFrame, text='QR Code \n Not Available', font=('goudy old style', 20, 'bold'), bg='lightyellow', fg='navyblue', bd=2, relief=RIDGE)
-        qrCodeLabel.place(x=25, y=100, width=200, height=200)
+        self.qrCodeLabel = Label(qrCodeFrame, text='QR Code \n Not Available', font=('goudy old style', 20, 'bold'), bg='lightyellow', fg='navyblue', bd=2, relief=RIDGE)
+        self.qrCodeLabel.place(x=25, y=100, width=200, height=200)
 
     def clear(self):
         self.rollNumber.set('')
@@ -92,6 +96,8 @@ class QRGenerator:
         self.year.set('')
         self.msg = ''
         self.labelMsg.config(text=self.msg)
+        self.qrCodeLabel.config(image='')
+
 
 
     def generate(self):
@@ -99,9 +105,23 @@ class QRGenerator:
             self.msg = 'All fields must be required!!!'
             self.labelMsg.config(text=self.msg, fg='red')
         else:
+            data = f'Student Roll Number: {self.rollNumber.get()}\nStudent Name: {self.name.get()}\nStudent Branch: {self.branch.get()}\nCurrent Year: {self.year.get()}'
+            qrImage=qrcode.make(data)
+            qrImage = resizeimage.resize_cover(qrImage, [200,200])
+            qrImage.save(f"{self.rollNumber.get()}'s QrCode.jpg")
+            self.img = ImageTk.PhotoImage(file=f"{self.rollNumber.get()}'s QrCode.jpg")
+            self.qrCodeLabel.config(image=self.img)
             self.msg = 'QR Code Generated Successfully!!!'
             self.labelMsg.config(text=self.msg, fg='green')
 
 root = Tk()
 ob = QRGenerator(root)
 root.mainloop()
+
+
+'''
+
+qr = qrcode.QRCode(version=1, border=5, box_size=15)
+            qr.add_data(data)
+            qr.make(fit=True)
+'''
