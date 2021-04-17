@@ -7,8 +7,14 @@ display_height=600
 gameDisplays=pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('car game')
 clock = pygame.time.Clock()
+carImg = pygame.image.load('car.jpg')
+
+def car(x, y):
+    gameDisplays.blit(carImg, (x, y))
 
 def game_loop():
+    x = (display_width*0.45)
+    y = (display_height*0.8)
     bumped=False
     while not bumped:
         for event in pygame.event.get():
@@ -16,6 +22,7 @@ def game_loop():
                 bumped = True
         
         gameDisplays.fill(gray)
+        car(x, y)
         pygame.display.update()
         clock.tick(60)
 
