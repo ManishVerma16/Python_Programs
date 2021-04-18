@@ -1,5 +1,8 @@
 from tkinter import *
-import math, random, datetime
+import math
+import random
+import datetime
+from tkinter import messagebox
 
 
 class BillingApp:
@@ -55,10 +58,10 @@ class BillingApp:
         self.customerName = StringVar()
         self.customerPhone = StringVar()
         self.billNumber = StringVar()
-        x = random.randint(1000,9999)
+        x = random.randint(1000, 9999)
         self.billNumber.set(x)
         self.billDate = StringVar()
-        date= datetime.date.today()
+        date = datetime.date.today()
         self.billDate.set(date)
 
         # self.searchBill = StringVar()
@@ -245,18 +248,17 @@ class BillingApp:
 
         buttonFrame = Frame(F6, bd=2, relief=GROOVE, bg='white',)
         buttonFrame.place(x=680, y=5, width=600, height=115)
-        total = Button(buttonFrame, text='Total Amount', command=self.total,font=f'font1 18 bold', bg=bg_color,
+        total = Button(buttonFrame, text='Total Amount', command=self.total, font=f'font1 18 bold', bg=bg_color,
                        fg='white', pady=20, padx=5).grid(row=0, column=0, padx=8, pady=10)
-        generate = Button(buttonFrame, text='Generate Bill',command=self.billArea, font=f'font1 18 bold',
+        generate = Button(buttonFrame, text='Generate Bill', command=self.billArea, font=f'font1 18 bold',
                           bg=bg_color, fg='white', pady=20, padx=5).grid(row=0, column=1, padx=8, pady=10)
         clear = Button(buttonFrame, text='Clear', font=f'font1 18 bold', bg=bg_color,
                        fg='white', pady=20, padx=5).grid(row=0, column=2, padx=8, pady=10)
         exit = Button(buttonFrame, text='Exit', font=f'font1 18 bold', bg=bg_color,
                       fg='white', pady=20, padx=5).grid(row=0, column=3, padx=8, pady=10)
 
-
     def total(self):
-
+        # Cosmetics total
         self.soapPrice = self.soap.get()*30
         self.faceCreamPrice = self.faceCream.get()*50
         self.faceWashPrice = self.faceWash.get()*50
@@ -264,6 +266,7 @@ class BillingApp:
         self.hairGelPrice = self.hairGel.get()*80
         self.bodyLotionPrice = self.bodyLotion.get()*100
 
+        # Grocery Total
         self.ricePrice = self.rice.get()*40
         self.vegetableOilPrice = self.vegetableOil.get()*140
         self.pulsesPrice = self.pulses.get()*100
@@ -271,6 +274,7 @@ class BillingApp:
         self.sugarPrice = self.sugar.get()*40
         self.teaPrice = self.tea.get()*115
 
+        # Cold Drink Total
         self.pepsiPrice = self.pepsi.get()*90
         self.limcaPrice = self.limca.get()*40
         self.frootiPrice = self.frooti.get()*99
@@ -294,68 +298,117 @@ class BillingApp:
         self.totalCosmeticTax = float(self.totalCosmeticPrice*0.05)
         self.totalGroceryTax = float(self.totalGroceryPrice*0.05)
         self.totalColdDrinkTax = float(self.totalColdDrinkPrice*0.05)
-        
+
         self.cosmeticPrice.set('Rs. '+str(self.totalCosmeticPrice))
         self.groceryPrice.set('Rs. '+str(self.totalGroceryPrice))
         self.coldDrinkPrice.set('Rs. '+str(self.totalColdDrinkPrice))
-        
+
         self.cosmeticTax.set('Rs. '+str(self.totalCosmeticTax))
         self.groceryTax.set('Rs. '+str(self.totalGroceryTax))
         self.coldDrinkTax.set('Rs. '+str(self.totalColdDrinkTax))
 
+        self.totalBill = float(self.totalCosmeticPrice + self.totalGroceryPrice + self.totalColdDrinkPrice +
+                               self.totalCosmeticTax + self.totalColdDrinkTax + self.totalColdDrinkTax)
 
     def welcomeBill(self):
         self.textArea.delete('1.0', END)
-        self.textArea.insert(END,'\tWelcome To IshVer Retails')
-        self.textArea.insert(END,'\n\n--------------------------------------------')
-        self.textArea.insert(END,f'\n\nBill Number: {self.billNumber.get()}')
-        self.textArea.insert(END,f'\nBill Date: {self.billDate.get()}')
-        self.textArea.insert(END,f'\nCustomer Name: {self.customerName.get()}')
-        self.textArea.insert(END,f'\nPhone Number: {self.customerPhone.get()}')
-        self.textArea.insert(END,'\n\n--------------------------------------------')
-        self.textArea.insert(END,f'\nProducts\t\tQty\t\tPrice')
-        self.textArea.insert(END,'\n\n--------------------------------------------')
+        self.textArea.insert(END, '\tWelcome To IshVer Retails')
+        self.textArea.insert(
+            END, '\n\n--------------------------------------------')
+        self.textArea.insert(END, f'\n\nBill Number: {self.billNumber.get()}')
+        self.textArea.insert(END, f'\nBill Date: {self.billDate.get()}')
+        self.textArea.insert(
+            END, f'\nCustomer Name: {self.customerName.get()}')
+        self.textArea.insert(
+            END, f'\nPhone Number: {self.customerPhone.get()}')
+        self.textArea.insert(
+            END, '\n\n--------------------------------------------')
+        self.textArea.insert(END, f'\nProducts\t\tQty\t\tPrice')
+        self.textArea.insert(
+            END, '\n\n--------------------------------------------')
 
     def billArea(self):
-        self.welcomeBill()
-        if self.soap.get() != 0:
-            self.textArea.insert(END,f"\nBath Soap\t\t{self.soap.get()}\t\t{self.soapPrice}")
-        if self.faceCream.get() != 0:
-            self.textArea.insert(END,f"\nFace Cream\t\t{self.faceCream.get()}\t\t{self.faceCreamPrice}")
-        if self.faceWash.get() != 0:
-            self.textArea.insert(END,f"\nFace Wash\t\t{self.faceWash.get()}\t\t{self.faceWashPrice}")
-        if self.hairGel.get() != 0:
-            self.textArea.insert(END,f"\nHair Gel\t\t{self.hairGel.get()}\t\t{self.hairGelPrice}")
-        if self.hairSpray.get() != 0:
-            self.textArea.insert(END,f"\nHair Spray\t\t{self.hairSpray.get()}\t\t{self.hairSprayPrice}")
-        if self.bodyLotion.get() != 0:
-            self.textArea.insert(END,f"\nBody Lotion\t\t{self.bodyLotion.get()}\t\t{self.bodyLotionPrice}")
-            
-        if self.frooti.get() != 0:
-            self.textArea.insert(END,f"\nFrooti\t\t{self.frooti.get()}\t\t{self.frootiPrice}")
-        if self.limca.get() != 0:
-            self.textArea.insert(END,f"\nLimca\t\t{self.limca.get()}\t\t{self.limcaPrice}")
-        if self.thumbsUp.get() != 0:
-            self.textArea.insert(END,f"\nThumbs Up\t\t{self.thumbsUp.get()}\t\t{self.thumbsUpPrice}")
-        if self.sprite.get() != 0:
-            self.textArea.insert(END,f"\nSprite\t\t{self.sprite.get()}\t\t{self.spritePrice}")
-        if self.mirinda.get() != 0:
-            self.textArea.insert(END,f"\nMirinda\t\t{self.mirinda.get()}\t\t{self.mirindaPrice}")
-        if self.pepsi.get() != 0:
-            self.textArea.insert(END,f"\nPepsi\t\t{self.pepsi.get()}\t\t{self.pepsiPrice}")
+        if self.customerName.get() == '' or self.customerPhone.get() == "":
+            messagebox.showerror('Error', 'Customer details are must!!!')
+        
+        elif self.totalCosmeticPrice == 0.0 or self.totalColdDrinkPrice == 0.0 or self.totalGroceryPrice == 0.0:
+            messagebox.showerror('Error', 'No Product Selected!!!')
+        else:
+            self.welcomeBill()
+            if self.soap.get() != 0:
+                self.textArea.insert(
+                    END, f"\nBath Soap\t\t{self.soap.get()}\t\t{self.soapPrice}")
+            if self.faceCream.get() != 0:
+                self.textArea.insert(
+                    END, f"\nFace Cream\t\t{self.faceCream.get()}\t\t{self.faceCreamPrice}")
+            if self.faceWash.get() != 0:
+                self.textArea.insert(
+                    END, f"\nFace Wash\t\t{self.faceWash.get()}\t\t{self.faceWashPrice}")
+            if self.hairGel.get() != 0:
+                self.textArea.insert(
+                    END, f"\nHair Gel\t\t{self.hairGel.get()}\t\t{self.hairGelPrice}")
+            if self.hairSpray.get() != 0:
+                self.textArea.insert(
+                    END, f"\nHair Spray\t\t{self.hairSpray.get()}\t\t{self.hairSprayPrice}")
+            if self.bodyLotion.get() != 0:
+                self.textArea.insert(
+                    END, f"\nBody Lotion\t\t{self.bodyLotion.get()}\t\t{self.bodyLotionPrice}")
 
-        if self.rice.get() != 0:
-            self.textArea.insert(END,f"\nRice\t\t{self.rice.get()}\t\t{self.ricePrice}")
-        if self.pulses.get() != 0:
-            self.textArea.insert(END,f"\nPulses\t\t{self.pulses.get()}\t\t{self.pulsesPrice}")
-        if self.flour.get() != 0:
-            self.textArea.insert(END,f"\nFlour\t\t{self.flour.get()}\t\t{self.flourPrice}")
-        if self.tea.get() != 0:
-            self.textArea.insert(END,f"\nTea\t\t{self.tea.get()}\t\t{self.teaPrice}")
-        if self.vegetableOil.get() != 0:
-            self.textArea.insert(END,f"\nVegetable Oil\t\t{self.vegetableOil.get()}\t\t{self.vegetableOilPrice}")
-        if self.sugar.get() != 0:
-            self.textArea.insert(END,f"\nBath Soap\t\t{self.sugar.get()}\t\t{self.sugarPrice}")
+            if self.frooti.get() != 0:
+                self.textArea.insert(
+                    END, f"\nFrooti\t\t{self.frooti.get()}\t\t{self.frootiPrice}")
+            if self.limca.get() != 0:
+                self.textArea.insert(
+                    END, f"\nLimca\t\t{self.limca.get()}\t\t{self.limcaPrice}")
+            if self.thumbsUp.get() != 0:
+                self.textArea.insert(
+                    END, f"\nThumbs Up\t\t{self.thumbsUp.get()}\t\t{self.thumbsUpPrice}")
+            if self.sprite.get() != 0:
+                self.textArea.insert(
+                    END, f"\nSprite\t\t{self.sprite.get()}\t\t{self.spritePrice}")
+            if self.mirinda.get() != 0:
+                self.textArea.insert(
+                    END, f"\nMirinda\t\t{self.mirinda.get()}\t\t{self.mirindaPrice}")
+            if self.pepsi.get() != 0:
+                self.textArea.insert(
+                    END, f"\nPepsi\t\t{self.pepsi.get()}\t\t{self.pepsiPrice}")
+
+            if self.rice.get() != 0:
+                self.textArea.insert(
+                    END, f"\nRice\t\t{self.rice.get()}\t\t{self.ricePrice}")
+            if self.pulses.get() != 0:
+                self.textArea.insert(
+                    END, f"\nPulses\t\t{self.pulses.get()}\t\t{self.pulsesPrice}")
+            if self.flour.get() != 0:
+                self.textArea.insert(
+                    END, f"\nFlour\t\t{self.flour.get()}\t\t{self.flourPrice}")
+            if self.tea.get() != 0:
+                self.textArea.insert(
+                    END, f"\nTea\t\t{self.tea.get()}\t\t{self.teaPrice}")
+            if self.vegetableOil.get() != 0:
+                self.textArea.insert(
+                    END, f"\nVegetable Oil\t\t{self.vegetableOil.get()}\t\t{self.vegetableOilPrice}")
+            if self.sugar.get() != 0:
+                self.textArea.insert(
+                    END, f"\nBath Soap\t\t{self.sugar.get()}\t\t{self.sugarPrice}")
+
+            self.textArea.insert(
+                END, '\n\n--------------------------------------------')
+            if self.cosmeticTax.get() != 'Rs. 0.0':
+                self.textArea.insert(
+                    END, f'\nCosmetic Tax\t\t\t\t{self.cosmeticTax.get()}')
+            if self.groceryTax.get() != 'Rs. 0.0':
+                self.textArea.insert(
+                    END, f'\nGrocery Tax\t\t\t\t{self.groceryTax.get()}')
+            if self.coldDrinkTax.get() != 'Rs. 0.0':
+                self.textArea.insert(
+                    END, f'\nCold Drink Tax\t\t\t\t{self.coldDrinkTax.get()}')
+            self.textArea.insert(
+                END, '\n\n--------------------------------------------')
+            self.textArea.insert(
+                END, f'\nTotal Bill \t\t\t\tRs. {self.totalBill}')
+            self.textArea.insert(
+                END, '\n\n--------------------------------------------')
 
 
 root = Tk()

@@ -25,7 +25,7 @@ def game_loop():
         if event.type==pygame.KEYDOWN:
             if event.type == pygame.K_LEFT:
                 x_change = -5
-            if event.type == pygame.K_RIGH:
+            if event.type == pygame.K_RIGHT:
                 x_change = 5
 
         gameDisplays.fill(gray)
