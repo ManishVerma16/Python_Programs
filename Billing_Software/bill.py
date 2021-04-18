@@ -1,7 +1,5 @@
 from tkinter import *
-import math
-import random
-import datetime
+import math, random, datetime, os
 from tkinter import messagebox
 
 
@@ -64,7 +62,7 @@ class BillingApp:
         date = datetime.date.today()
         self.billDate.set(date)
 
-        # self.searchBill = StringVar()
+        self.searchBill = StringVar()
 
         #  Customer Detail Frame
         F1 = LabelFrame(self.root, text='Customer Details', font=(
@@ -84,14 +82,14 @@ class BillingApp:
         customerBillLabel = Label(F1, text='Bill Number', bg=bg_color, fg='white', font=(
             f'{font1}', 15, 'bold')).grid(row=0, column=4, padx=10)
         customerBillInput = Entry(F1, width=15, font=(
-            'arial 12'), bd=2, relief=SUNKEN, textvariable=self.billNumber).grid(row=0, column=5, padx=10, pady=5)
+            'arial 12'), bd=2, relief=SUNKEN, textvariable=self.searchBill).grid(row=0, column=5, padx=10, pady=5)
 
         billDateLabel = Label(F1, text='Date', bg=bg_color, fg='white', font=(
             f'{font1}', 15, 'bold')).grid(row=0, column=6, padx=10)
         billDateInput = Entry(F1, width=15, font=(
             'arial 12'), bd=2, relief=SUNKEN, textvariable=self.billDate).grid(row=0, column=7, padx=10, pady=5)
 
-        billButton = Button(F1, width=10, text='Search', font=f"{font1} 10 bold").grid(
+        billButton = Button(F1, width=10, text='Search', command=self.findBill, font=f"{font1} 10 bold").grid(
             row=0, column=8, padx=30, pady=10)
 
         # Cosmetics
@@ -252,9 +250,9 @@ class BillingApp:
                        fg='white', pady=20, padx=5).grid(row=0, column=0, padx=8, pady=10)
         generate = Button(buttonFrame, text='Generate Bill', command=self.billArea, font=f'font1 18 bold',
                           bg=bg_color, fg='white', pady=20, padx=5).grid(row=0, column=1, padx=8, pady=10)
-        clear = Button(buttonFrame, text='Clear', font=f'font1 18 bold', bg=bg_color,
+        clear = Button(buttonFrame, text='Clear', command=self.clear, font=f'font1 18 bold', bg=bg_color,
                        fg='white', pady=20, padx=5).grid(row=0, column=2, padx=8, pady=10)
-        exit = Button(buttonFrame, text='Exit', font=f'font1 18 bold', bg=bg_color,
+        exit = Button(buttonFrame, text='Exit',command=self.exit, font=f'font1 18 bold', bg=bg_color,
                       fg='white', pady=20, padx=5).grid(row=0, column=3, padx=8, pady=10)
 
     def total(self):
@@ -331,7 +329,7 @@ class BillingApp:
         if self.customerName.get() == '' or self.customerPhone.get() == "":
             messagebox.showerror('Error', 'Customer details are must!!!')
         
-        elif self.totalCosmeticPrice == 0.0 or self.totalColdDrinkPrice == 0.0 or self.totalGroceryPrice == 0.0:
+        elif self.totalCosmeticPrice == 0.0 and self.totalColdDrinkPrice == 0.0 and self.totalGroceryPrice == 0.0:
             messagebox.showerror('Error', 'No Product Selected!!!')
         else:
             self.welcomeBill()
@@ -409,14 +407,94 @@ class BillingApp:
                 END, f'\nTotal Bill \t\t\t\tRs. {self.totalBill}')
             self.textArea.insert(
                 END, '\n\n--------------------------------------------')
+            self.textArea.insert(
+                END, f'\nThank You For Shopping. Please Visit Again. Have A Nice Day!!!')
+            
+            self.saveBill()
 
+    def saveBill(self):
+        option = messagebox.askyesno('Save Bill','Do you want to save this bill?')
+        if option > 0:
+            self.billData = self.textArea.get('1.0', END)
+            f1 = open('bills/'+ str(self.billNumber.get())+'.txt', 'w')
+            f1.write(self.billData)
+            f1.close()
+            messagebox.showinfo('Saved', f'Bill no: {self.billNumber} has been saved successfully!!!')
+        else:
+            return
+
+    def findBill(self):
+        present = 'no'
+        for i in os.listdir('bills/'):
+            if i.split('.')[0] == self.searchBill.get():
+                f1 = open(f'bills/{i}', 'r')
+                self.textArea.delete('1.0', END)
+                for data in f1:
+                    self.textArea.insert(END, data)
+                f1.close()
+                present = 'yes'
+        if present == 'no':
+            messagebox.showerror('Error', 'Invalid Bill Number!!!')
+                
+    def clear(self):
+        option = messagebox.askyesno('Clear','Do you really want to clear?')
+        if option > 0:
+            
+            # Cosmetics
+            self.soap.set(0)
+            self.faceCream.set(0)
+            self.faceWash.set(0)
+            self.hairSpray.set(0)
+            self.hairGel.set(0)
+            self.bodyLotion.set(0)
+
+            # Grocery
+            self.rice.set(0)
+            self.vegetableOil.set(0)
+            self.pulses.set(0)
+            self.flour.set(0)
+            self.sugar.set(0)
+            self.tea.set(0)
+
+            # Cold Drinks
+            self.pepsi.set(0)
+            self.limca.set(0)
+            self.frooti.set(0)
+            self.mirinda.set(0)
+            self.thumbsUp.set(0)
+            self.sprite.set(0)
+
+            # total product price and tax variable
+
+            self.cosmeticPrice.set('')
+            self.groceryPrice.set('')
+            self.coldDrinkPrice.set('')
+
+            self.cosmeticTax.set('')
+            self.groceryTax.set('')
+            self.coldDrinkTax.set('')
+
+            # Customer
+
+            self.customerName.set('')
+            self.customerPhone.set('')
+            self.billNumber.set('')
+            x = random.randint(1000, 9999)
+            self.billNumber.set(x)
+            self.billDate = StringVar()
+            date = datetime.date.today()
+            self.billDate.set(date)
+
+            self.searchBill.set('')
+            self.textArea.delete('1.0', END)
+
+    
+    def exit(self):
+        option = messagebox.askyesno('Exit','Do you really want to exit?')
+        if option > 0:
+            self.root.destroy()
 
 root = Tk()
 ob = BillingApp(root)
 root.mainloop()
 
-
-'''
-
-
-'''
